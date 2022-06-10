@@ -64,11 +64,11 @@ var refreshlist = function refreshlist() {
     }
     }
 var timer_waitlist = setInterval(refreshlist, 1000);
-// 20分钟后自动刷新
+// 8-12分钟后自动刷新
 var timer_reload = setInterval(function(){
     clearInterval(timer_reload);
-    window.location.href=window.location.href;
-}, 20*60*1000)
+    document.location.reload();;
+}, 10*60*1000*(1+(Math.random()-0.5)*0.2))
 }
 // 魔法页
 if (String(location).includes("https://u2.dmhy.org/promotion.php")){
