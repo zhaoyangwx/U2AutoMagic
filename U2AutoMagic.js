@@ -64,7 +64,7 @@ var refreshlist = function refreshlist() {
     }
     }
 var timer_waitlist = setInterval(refreshlist, 1000);
-// 8-12分钟后自动刷新
+// 9-11分钟后自动刷新
 var timer_reload = setInterval(function(){
     clearInterval(timer_reload);
     document.location.reload();;
