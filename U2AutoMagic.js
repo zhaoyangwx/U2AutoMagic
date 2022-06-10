@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         U2LeechList
+// @name         U2AutoMagic
 // @namespace    https://github.com/zhaoyangwx/U2AutoMagic
 // @version      0.1
 // @description  U2LeechList: Scan and Magic
