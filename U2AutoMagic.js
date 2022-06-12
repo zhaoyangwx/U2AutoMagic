@@ -4,6 +4,7 @@
 // @version      0.1
 // @description  U2LeechList: Scan and Magic
 // @author       zhaoyangwx
+// @supportURL   https://github.com/zhaoyangwx/U2AutoMagic/blob/main/README.md
 // @match        https://u2.dmhy.org/userdetails.php?id=*&dllist=1
 // @match        https://u2.dmhy.org/promotion.php?action=*&*
 // @icon         https://u2.dmhy.org/favicon.ico
