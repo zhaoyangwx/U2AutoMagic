@@ -13,80 +13,80 @@
 // @grant        GM_getValue
 // ==/UserScript==
 (function(){
-//详情页
-if (String(location).includes("https://u2.dmhy.org/userdetails.php?") & String(location).includes("dllist=1")){
-var refreshlist = function refreshlist() {
-    'use strict';
-    // Your code here...
-    var tlist = document.evaluate("/html/body/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr[22]/td[2]/div/table/tbody/tr", document, null, XPathResult.ANY_TYPE)
-    var tle = tlist.iterateNext();
-    tle = tlist.iterateNext();
-    if (tle){clearInterval(timer_waitlist)} else {return 0;}
-    var idlist=[];
-    while (tle){
-        var ucount = document.evaluate("td[4]", tle, null, XPathResult.ANY_TYPE).iterateNext();
-        var promotiontype = document.evaluate("td[2]/table/tbody/tr[2]/td/img", tle, null, XPathResult.ANY_TYPE).iterateNext();
-        var idstring = document.evaluate("td[2]/table/tbody/tr[1]/td/a", tle, null, XPathResult.ANY_TYPE).iterateNext().getAttribute("href").replace('details.php?id=','').replace('&hit=1','');
-        var freeflag = false
-        if (promotiontype) {
-        //console.log(promotiontype.getAttribute("alt"));
-        freeflag = (promotiontype.getAttribute("alt").toLowerCase().includes("free"));
-        }
-        //console.log(ucount.textContent);
-        //idlist.push(idstring);
-        //console.log(idstring);
-        if (ucount.textContent != "" && ucount.textContent != "0"){
-            if (freeflag){
-                // 有人上传且Free，仅标记
-                document.evaluate("td[5]", tle, null, XPathResult.ANY_TYPE).iterateNext().style.backgroundColor = '#00FF00';
+    //详情页
+    if (String(location).includes("https://u2.dmhy.org/userdetails.php?") & String(location).includes("dllist=1")){
+        var refreshlist = function refreshlist() {
+            'use strict';
+            // Your code here...
+            var tlist = document.evaluate("/html/body/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr[22]/td[2]/div/table/tbody/tr", document, null, XPathResult.ANY_TYPE)
+            var tle = tlist.iterateNext();
+            tle = tlist.iterateNext();
+            if (tle){clearInterval(timer_waitlist)} else {return 0;}
+            var idlist=[];
+            while (tle){
+                var ucount = document.evaluate("td[4]", tle, null, XPathResult.ANY_TYPE).iterateNext();
+                var promotiontype = document.evaluate("td[2]/table/tbody/tr[2]/td/img", tle, null, XPathResult.ANY_TYPE).iterateNext();
+                var idstring = document.evaluate("td[2]/table/tbody/tr[1]/td/a", tle, null, XPathResult.ANY_TYPE).iterateNext().getAttribute("href").replace('details.php?id=','').replace('&hit=1','');
+                var freeflag = false
+                if (promotiontype) {
+                    //console.log(promotiontype.getAttribute("alt"));
+                    freeflag = (promotiontype.getAttribute("alt").toLowerCase().includes("free"));
+                }
+                //console.log(ucount.textContent);
+                //idlist.push(idstring);
+                //console.log(idstring);
+                if (ucount.textContent != "" && ucount.textContent != "0"){
+                    if (freeflag){
+                        // 有人上传且Free，仅标记
+                        document.evaluate("td[5]", tle, null, XPathResult.ANY_TYPE).iterateNext().style.backgroundColor = '#00FF00';
+                    }
+                    else
+                    {
+                        // 有人上传且非Free，标记并记录
+                        document.evaluate("td[5]", tle, null, XPathResult.ANY_TYPE).iterateNext().style.backgroundColor = '#FF7F00';
+                        idlist.push(idstring);
+                    }
+                }
+                else{
+                    ucount.style.backgroundColor = '#AFAFAF';
+                }
+                tle = tlist.iterateNext();
             }
-            else
-            {
-                // 有人上传且非Free，标记并记录
-                document.evaluate("td[5]", tle, null, XPathResult.ANY_TYPE).iterateNext().style.backgroundColor = '#FF7F00';
-                idlist.push(idstring);
+            console.log("OK at " + new Date());
+            // do something with thisLink
+            for(var i in idlist){
+                // 查询记录，进入第一条的放魔法页，自动放魔法启用
+                GM_setValue('promotion',true);
+                //console.log(GM_getValue('promotion'));
+                window.location.replace("https://u2.dmhy.org/promotion.php?action=magic&torrent="+idlist[i]);
+
+                // 似乎不能直接完成，执行完一条等会回来重新检查就行了
+                return 0;
             }
         }
-        else{
-            ucount.style.backgroundColor = '#AFAFAF';
+        var timer_waitlist = setInterval(refreshlist, 1000);
+        // 9-11分钟后自动刷新
+        var timer_reload = setInterval(function(){
+            clearInterval(timer_reload);
+            document.location.reload();
+        }, 10*60*1000*(1+(Math.random()-0.5)*0.2))
         }
-        tle = tlist.iterateNext();
-    }
-    console.log("OK at " + new Date());
-        // do something with thisLink
-    for(var i in idlist){
-        // 查询记录，进入第一条的放魔法页，自动放魔法启用
-        GM_setValue('promotion',true);
-        //console.log(GM_getValue('promotion'));
-        window.location.replace("https://u2.dmhy.org/promotion.php?action=magic&torrent="+idlist[i]);
+    // 魔法页
+    if (String(location).includes("https://u2.dmhy.org/promotion.php")){
+        console.log(GM_listValues());
+        console.log(GM_getValue('promotion'));
+        // 检查上一次魔法是否放完
+        if (GM_getValue('return')==true){
+            GM_setValue('return',false);
+            document.evaluate("/html/body/table[2]/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td[1]/span/a[11]", document, null, XPathResult.ANY_TYPE).iterateNext().click();
+            return 0;
+        }
+        // 检查是否启用自动放魔法
+        if (GM_getValue('promotion')==false){return -1;}
+        GM_setValue('promotion',false);
 
-        // 似乎不能直接完成，执行完一条等会回来重新检查就行了
-        return 0;
-    }
-    }
-var timer_waitlist = setInterval(refreshlist, 1000);
-// 9-11分钟后自动刷新
-var timer_reload = setInterval(function(){
-    clearInterval(timer_reload);
-    document.location.reload();
-}, 10*60*1000*(1+(Math.random()-0.5)*0.2))
-}
-// 魔法页
-if (String(location).includes("https://u2.dmhy.org/promotion.php")){
-    console.log(GM_listValues());
-    console.log(GM_getValue('promotion'));
-    // 检查上一次魔法是否放完
-    if (GM_getValue('return')==true){
-        GM_setValue('return',false);
-        document.evaluate("/html/body/table[2]/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td[1]/span/a[11]", document, null, XPathResult.ANY_TYPE).iterateNext().click();
-        return 0;
-    }
-    // 检查是否启用自动放魔法
-    if (GM_getValue('promotion')==false){return -1;}
-    GM_setValue('promotion',false);
-
-    // 等待加载完成
-    var timer_promotionwait = setInterval(function(){
+        // 等待加载完成
+        var timer_promotionwait = setInterval(function(){
             var prom = document.evaluate("/html/body/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table[2]/tbody/tr/td/form/table/tbody/tr[4]/td[2]/input", document, null, XPathResult.ANY_TYPE);
             console.log(prom);
             var ptime = prom.iterateNext();
@@ -117,11 +117,11 @@ if (String(location).includes("https://u2.dmhy.org/promotion.php")){
                                 document.evaluate("/html/body/table[2]/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td[1]/span/a[11]", document, null, XPathResult.ANY_TYPE).iterateNext().click();
                             }
                         }, 1000)
-                    }
+                        }
                 }, 1000)
                 console.log("OK");
             }
 
         }, 1000);
-}
+    }
 })();
