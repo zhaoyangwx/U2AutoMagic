@@ -5,7 +5,7 @@
 // @description  U2LeechList: Scan and Magic
 // @author       zhaoyangwx
 // @match        https://u2.dmhy.org/userdetails.php?id=*&dllist=1
-// @match        https://u2.dmhy.org/promotion.php?action=*&torrent=*
+// @match        https://u2.dmhy.org/promotion.php?action=*&*
 // @icon         https://u2.dmhy.org/favicon.ico
 // @grant        GM_listValues
 // @grant        GM_setValue
@@ -74,15 +74,15 @@ var timer_reload = setInterval(function(){
 if (String(location).includes("https://u2.dmhy.org/promotion.php")){
     console.log(GM_listValues());
     console.log(GM_getValue('promotion'));
-    // 检查是否启用自动放魔法
-    if (GM_getValue('promotion')==false){return -1;}
-    GM_setValue('promotion',false);
     // 检查上一次魔法是否放完
     if (GM_getValue('return')==true){
         GM_setValue('return',false);
         document.evaluate("/html/body/table[2]/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td[1]/span/a[11]", document, null, XPathResult.ANY_TYPE).iterateNext().click();
         return 0;
     }
+    // 检查是否启用自动放魔法
+    if (GM_getValue('promotion')==false){return -1;}
+    GM_setValue('promotion',false);
 
     // 等待加载完成
     var timer_promotionwait = setInterval(function(){
