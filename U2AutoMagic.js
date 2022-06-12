@@ -53,6 +53,7 @@
                 tle = tlist.iterateNext();
             }
             console.log("OK at " + new Date());
+            document.title = "Updated at " + new Date()
             // do something with thisLink
             for(var i in idlist){
                 // 查询记录，进入第一条的放魔法页，自动放魔法启用
