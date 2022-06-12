@@ -76,10 +76,19 @@
     if (String(location).includes("https://u2.dmhy.org/promotion.php")){
         console.log(GM_listValues());
         console.log(GM_getValue('promotion'));
+        console.log(GM_getValue('return'));
         // 检查上一次魔法是否放完
         if (GM_getValue('return')==true){
-            GM_setValue('return',false);
-            document.evaluate("/html/body/table[2]/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td[1]/span/a[11]", document, null, XPathResult.ANY_TYPE).iterateNext().click();
+            var timer_returntolist = setInterval(function(){
+                            var presult = document.evaluate("/html/body/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[9]/td[2]/b", document, null, XPathResult.ANY_TYPE);
+                            presult = presult.iterateNext();
+                            if (presult){
+                                GM_setValue('return',false);
+                                clearInterval(timer_returntolist);
+                                // 返回到详情页
+                                document.evaluate("/html/body/table[2]/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td[1]/span/a[11]", document, null, XPathResult.ANY_TYPE).iterateNext().click();
+                            }
+                        }, 1000)
             return 0;
         }
         // 检查是否启用自动放魔法
@@ -109,15 +118,6 @@
                         var btnexecprom = document.evaluate("/html/body/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table[2]/tbody/tr/td/form/input[9]", document, null, XPathResult.ANY_TYPE).iterateNext();
                         GM_setValue('return',true)
                         btnexecprom.click();
-                        var timer_returntolist = setInterval(function(){
-                            var presult = document.evaluate("/html/body/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[9]/td[2]/b", document, null, XPathResult.ANY_TYPE);
-                            presult = presult.iterateNext();
-                            if (presult){
-                                clearInterval(timer_returntolist);
-                                // 返回到详情页
-                                document.evaluate("/html/body/table[2]/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td[1]/span/a[11]", document, null, XPathResult.ANY_TYPE).iterateNext().click();
-                            }
-                        }, 1000)
                         }
                 }, 1000)
                 console.log("OK");
