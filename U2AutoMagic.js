@@ -5,7 +5,7 @@
 // @description  U2LeechList: Scan and Magic
 // @author       zhaoyangwx
 // @match        https://u2.dmhy.org/userdetails.php?id=*&dllist=1
-// @match        https://u2.dmhy.org/promotion.php?action=magic&torrent=*
+// @match        https://u2.dmhy.org/promotion.php?action=*&torrent=*
 // @icon         https://u2.dmhy.org/favicon.ico
 // @grant        GM_listValues
 // @grant        GM_setValue
@@ -20,7 +20,7 @@ var refreshlist = function refreshlist() {
     var tlist = document.evaluate("/html/body/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr[22]/td[2]/div/table/tbody/tr", document, null, XPathResult.ANY_TYPE)
     var tle = tlist.iterateNext();
     tle = tlist.iterateNext();
-    if (tle){clearInterval(timer_waitlist)}
+    if (tle){clearInterval(timer_waitlist)} else {return 0;}
     var idlist=[];
     while (tle){
         var ucount = document.evaluate("td[4]", tle, null, XPathResult.ANY_TYPE).iterateNext();
@@ -51,7 +51,7 @@ var refreshlist = function refreshlist() {
         }
         tle = tlist.iterateNext();
     }
-    console.log("OK");
+    console.log("OK at " + new Date());
         // do something with thisLink
     for(var i in idlist){
         // 查询记录，进入第一条的放魔法页，自动放魔法启用
@@ -67,7 +67,7 @@ var timer_waitlist = setInterval(refreshlist, 1000);
 // 9-11分钟后自动刷新
 var timer_reload = setInterval(function(){
     clearInterval(timer_reload);
-    document.location.reload();;
+    document.location.reload();
 }, 10*60*1000*(1+(Math.random()-0.5)*0.2))
 }
 // 魔法页
@@ -77,6 +77,12 @@ if (String(location).includes("https://u2.dmhy.org/promotion.php")){
     // 检查是否启用自动放魔法
     if (GM_getValue('promotion')==false){return -1;}
     GM_setValue('promotion',false);
+    // 检查上一次魔法是否放完
+    if (GM_getValue('return')==true){
+        GM_setValue('return',false);
+        document.evaluate("/html/body/table[2]/tbody/tr[1]/td/table[2]/tbody/tr/td/table/tbody/tr/td[1]/span/a[11]", document, null, XPathResult.ANY_TYPE).iterateNext().click();
+        return 0;
+    }
 
     // 等待加载完成
     var timer_promotionwait = setInterval(function(){
@@ -99,6 +105,7 @@ if (String(location).includes("https://u2.dmhy.org/promotion.php")){
                         clearInterval(timer_pcost);
                         // 放魔法，等待促销页面
                         var btnexecprom = document.evaluate("/html/body/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table[2]/tbody/tr/td/form/input[9]", document, null, XPathResult.ANY_TYPE).iterateNext();
+                        GM_setValue('return',true)
                         btnexecprom.click();
                         var timer_returntolist = setInterval(function(){
                             var presult = document.evaluate("/html/body/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table[2]/tbody/tr/td/table/tbody/tr[9]/td[2]/b", document, null, XPathResult.ANY_TYPE);
