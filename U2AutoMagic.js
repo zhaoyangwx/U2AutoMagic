@@ -12,6 +12,13 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // ==/UserScript==
+
+/*
+chrome防止脚本停止执行，请设置：
+chrome://flags/
+Calculate window occlusion on Windows = Disabled
+*/
+
 (function(){
     //详情页
     if (String(location).includes("https://u2.dmhy.org/userdetails.php?") & String(location).includes("dllist=1")){
