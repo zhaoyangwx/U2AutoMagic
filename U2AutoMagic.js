@@ -76,7 +76,10 @@ Calculate window occlusion on Windows = Disabled
         // 9-11分钟后自动刷新
         var timer_reload = setInterval(function(){
             clearInterval(timer_reload);
-            document.location.reload();
+            //document.location.reload();
+            window.open(location,"_blank");
+            window.open('', '_self', '');
+            window.close();
         }, 10*60*1000*(1+(Math.random()-0.5)*0.2))
         }
     // 魔法页
