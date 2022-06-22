@@ -15,3 +15,5 @@ chrome防止脚本停止执行，请设置：
 chrome://flags/
 
 Calculate window occlusion on Windows = Disabled
+
+建议搭配Force Background Tab扩展程序食用
