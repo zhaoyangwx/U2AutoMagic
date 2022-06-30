@@ -11,6 +11,7 @@
 // @grant        GM_listValues
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @require    http://code.jquery.com/jquery-1.11.0.min.js
 // ==/UserScript==
 
 /*
@@ -38,6 +39,7 @@ Calculate window occlusion on Windows = Disabled
                 if (promotiontype) {
                     //console.log(promotiontype.getAttribute("alt"));
                     freeflag = (promotiontype.getAttribute("alt").toLowerCase().includes("free"));
+                    freeflag = freeflag | (promotiontype.getAttribute("alt").toLowerCase().includes("promotion"));
                 }
                 //console.log(ucount.textContent);
                 //idlist.push(idstring);
@@ -76,11 +78,11 @@ Calculate window occlusion on Windows = Disabled
         // 9-11分钟后自动刷新
         var timer_reload = setInterval(function(){
             clearInterval(timer_reload);
-            //document.location.reload();
+            document.location.reload();
             window.open(location,"_blank");
             window.open('', '_self', '');
             window.close();
-        }, 10*60*1000*(1+(Math.random()-0.5)*0.2))
+        }, 9*60*1000*(1+(Math.random()-0.5)*0.2))
         }
     // 魔法页
     if (String(location).includes("https://u2.dmhy.org/promotion.php")){
